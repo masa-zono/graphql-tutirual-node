@@ -5,15 +5,22 @@ const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");
 const User = require("./resolvers/User");
 const Link = require("./resolvers/Link");
+const Subscription = require("./resolvers/Subscription");
+const Vote = require("./resolvers/Vote");
+
 const fs = require("fs");
 const path = require("path");
+const { PubSub } = require("apollo-server");
+const pubsub = new PubSub();
 const prisma = new PrismaClient();
 
 const resolvers = {
   Query,
   Mutation,
+  Subscription,
   User,
   Link,
+  Vote,
 };
 
 const server = new ApolloServer({
@@ -23,6 +30,7 @@ const server = new ApolloServer({
     return {
       ...req,
       prisma,
+      pubsub,
       userId: req && req.headers.authorization ? getUserId(req) : null,
     };
   },
